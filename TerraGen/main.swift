@@ -8,12 +8,26 @@
 
 import Cocoa
 
-// TODO: replace these with command line arguments
-let width = 256
-let height = 256
-let targetFilePath = "/Users/Dominik/Desktop/terrain.png"
+// CommandLine argument count must equal three
+guard CommandLine.argc == 4 else {
+    print("Usage: \(CommandLine.arguments[0]) <width> <height> <file>")
+    exit(0)
+}
 
+// Initialize script parameters
+guard let width = Int(CommandLine.arguments[1]) else {
+    print("Failed to parse width parameter")
+    exit(1)
+}
+guard let height = Int(CommandLine.arguments[2]) else {
+    print("Failed to parse height parameter")
+    exit(1)
+}
+let targetFilePath = NSString(string: CommandLine.arguments[3]).expandingTildeInPath
 
+print("Generating Terrain with width: \(width) and height: \(height) at path: \(targetFilePath)")
+
+// Create target file if it does not exist (required)
 let fileManager = FileManager.default
 if (!fileManager.fileExists(atPath: targetFilePath)) {
     print("Created File since it does not exist")
@@ -38,7 +52,8 @@ guard let context = CGContext.init(
 let pixels = context.data!
 for y in 0..<height {
     for x in 0..<width {
-        pixels.storeBytes(of: UInt8(y), toByteOffset: y * width + x, as: UInt8.self)
+        let value: Float = 256 * (Float(y) / (2.0 * Float(height)) + Float(x) / (2.0 * Float(width)))
+        pixels.storeBytes(of: UInt8(value), toByteOffset: y * width + x, as: UInt8.self)
     }
 }
 
