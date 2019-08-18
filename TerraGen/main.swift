@@ -19,7 +19,7 @@ func exitWith(_ error: ErrorCode = .NoError) -> Never {
     exit(error.rawValue)
 }
 
-func main() {
+func parseArguments() -> (width: Int, height: Int, targetFilePath: String) {
     // CommandLine argument count must equal three
     guard CommandLine.argc == 4 else {
         print("Usage: \(CommandLine.arguments[0]) <width> <height> <file>")
@@ -37,15 +37,10 @@ func main() {
     }
     let targetFilePath = NSString(string: CommandLine.arguments[3]).expandingTildeInPath
     
-    print("Generating Terrain with width: \(width) and height: \(height) at path: \(targetFilePath)")
-    
-    // Create target file if it does not exist (required)
-    let fileManager = FileManager.default
-    if (!fileManager.fileExists(atPath: targetFilePath)) {
-        print("Created File since it does not exist")
-        fileManager.createFile(atPath: targetFilePath, contents: nil, attributes: nil)
-    }
-    
+    return (width, height, targetFilePath)
+}
+
+func createGrayScaleContext(width: Int, height: Int) -> CGContext {
     let colorSpace = CGColorSpaceCreateDeviceGray()
     guard let context = CGContext.init(
         data: nil,
@@ -60,13 +55,14 @@ func main() {
             exitWith(.CoreGraphicsError)
     }
     
-    // TODO: temporary code writing to the pixels
-    let pixels = context.data!
-    for y in 0..<height {
-        for x in 0..<width {
-            let value: Float = 256 * (Float(y) / (2.0 * Float(height)) + Float(x) / (2.0 * Float(width)))
-            pixels.storeBytes(of: UInt8(value), toByteOffset: y * width + x, as: UInt8.self)
-        }
+    return context
+}
+
+func write(grayScaleContext context: CGContext, toPath targetFilePath: String) {
+    // Create target file if it does not exist (required)
+    let fileManager = FileManager.default
+    if (!fileManager.fileExists(atPath: targetFilePath)) {
+        fileManager.createFile(atPath: targetFilePath, contents: nil, attributes: nil)
     }
     
     // Store to file on disk
@@ -83,6 +79,25 @@ func main() {
         print("Failed to write data to disk")
         exitWith(.IOError)
     }
+}
+
+func setGrayScalePixel(value: UInt8, inContext context: CGContext,  x: Int, y: Int, width: Int) {
+    context.data!.storeBytes(of: value, toByteOffset: y * width + x, as: UInt8.self)
+}
+
+func main() {
+    let (width, height, targetFilePath) = parseArguments()
+    let context = createGrayScaleContext(width: width, height: height)
+    
+    // TODO: temporary code writing to the pixels
+    for y in 0..<height {
+        for x in 0..<width {
+            let value: Float = 256 * (Float(y) / (2.0 * Float(height)) + Float(x) / (2.0 * Float(width)))
+            setGrayScalePixel(value: UInt8(value), inContext: context, x: x, y: y, width: width)
+        }
+    }
+    
+    write(grayScaleContext: context, toPath: targetFilePath)
 }
 
 main()
