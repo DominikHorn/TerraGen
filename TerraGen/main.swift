@@ -81,7 +81,7 @@ func write(grayScaleContext context: CGContext, toPath targetFilePath: String) {
     }
 }
 
-func setGrayScalePixel(value: UInt8, inContext context: CGContext,  x: Int, y: Int, width: Int) {
+func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: Int, width: Int, height: Int) {
     context.data!.storeBytes(of: value, toByteOffset: y * width + x, as: UInt8.self)
 }
 
@@ -89,11 +89,11 @@ func main() {
     let (width, height, targetFilePath) = parseArguments()
     let context = createGrayScaleContext(width: width, height: height)
     
-    // TODO: temporary code writing to the pixels
+    let noise = SimplexNoise(seed: 1)
     for y in 0..<height {
         for x in 0..<width {
-            let value: Float = 256 * (Float(y) / (2.0 * Float(height)) + Float(x) / (2.0 * Float(width)))
-            setGrayScalePixel(value: UInt8(value), inContext: context, x: x, y: y, width: width)
+            let value = 127.5 * (noise.noise2D(x: Double(x), y: Double(y)) + 1.0)
+            setGrayScalePixel(value: UInt8(value), inContext: context, x: x, y: y, width: width, height: height)
         }
     }
     

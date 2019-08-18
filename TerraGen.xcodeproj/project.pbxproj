@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B4C7F2A22309A7A600BA870D /* SimplexNoise.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7F2A12309A7A600BA870D /* SimplexNoise.swift */; };
+		B4C7F2A42309A9D800BA870D /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7F2A32309A9D800BA870D /* SeededGenerator.swift */; };
 		B4F3848A230984C900D29AD9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F38489230984C900D29AD9 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B4C7F2A12309A7A600BA870D /* SimplexNoise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplexNoise.swift; sourceTree = "<group>"; };
+		B4C7F2A32309A9D800BA870D /* SeededGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeededGenerator.swift; sourceTree = "<group>"; };
 		B4F38486230984C900D29AD9 /* TerraGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TerraGen; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F38489230984C900D29AD9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				B4F38489230984C900D29AD9 /* main.swift */,
+				B4C7F2A12309A7A600BA870D /* SimplexNoise.swift */,
+				B4C7F2A32309A9D800BA870D /* SeededGenerator.swift */,
 			);
 			path = TerraGen;
 			sourceTree = "<group>";
@@ -119,7 +125,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4C7F2A42309A9D800BA870D /* SeededGenerator.swift in Sources */,
 				B4F3848A230984C900D29AD9 /* main.swift in Sources */,
+				B4C7F2A22309A7A600BA870D /* SimplexNoise.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
