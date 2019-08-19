@@ -89,6 +89,11 @@ func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: In
     context.data!.storeBytes(of: value, toByteOffset: y * width + x, as: UInt8.self)
 }
 
+func uniformQuantize(value: Double, max: Double, min: Double, stepCount: Int) -> Double {
+    let stepSize = (max - min) / Double(stepCount)
+    return floor(value / stepSize) * stepSize
+}
+
 func main() {
     let (width, height, seed, targetFilePath) = parseArguments()
     let context = createGrayScaleContext(width: width, height: height)
@@ -97,8 +102,9 @@ func main() {
     for y in 0..<height {
         for x in 0..<width {
             let value = 127.5 * (noise.noise2D(x: Double(x), y: Double(y)) + 1.0)
+            let quantized = uniformQuantize(value: value, max: 255, min: 0, stepCount: 4)
             setGrayScalePixel(
-                value: UInt8(min(max(value, 0x00), 0xFF)),
+                value: UInt8(min(max(quantized, 0x00), 0xFF)),
                 inContext: context,
                 x: x,
                 y: y,
