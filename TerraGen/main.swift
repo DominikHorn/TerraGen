@@ -19,10 +19,10 @@ func exitWith(_ error: ErrorCode = .NoError) -> Never {
     exit(error.rawValue)
 }
 
-func parseArguments() -> (width: Int, height: Int, targetFilePath: String) {
+func parseArguments() -> (width: Int, height: Int, seed: UInt64, targetFilePath: String) {
     // CommandLine argument count must equal three
-    guard CommandLine.argc == 4 else {
-        print("Usage: \(CommandLine.arguments[0]) <width> <height> <file>")
+    guard CommandLine.argc == 5 else {
+        print("Usage: \(CommandLine.arguments[0]) <width> <height> <seed> <file>")
         exitWith(.NoError)
     }
     
@@ -35,9 +35,13 @@ func parseArguments() -> (width: Int, height: Int, targetFilePath: String) {
         print("Failed to parse height parameter")
         exitWith(.InvalidArgument)
     }
-    let targetFilePath = NSString(string: CommandLine.arguments[3]).expandingTildeInPath
+    guard let seed = UInt64(CommandLine.arguments[3]) else {
+        print("Failed to parse seed parameter")
+        exitWith(.InvalidArgument)
+    }
+    let targetFilePath = NSString(string: CommandLine.arguments[4]).expandingTildeInPath
     
-    return (width, height, targetFilePath)
+    return (width, height, seed, targetFilePath)
 }
 
 func createGrayScaleContext(width: Int, height: Int) -> CGContext {
@@ -81,22 +85,28 @@ func write(grayScaleContext context: CGContext, toPath targetFilePath: String) {
     }
 }
 
-func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: Int, width: Int, height: Int) {
+func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: Int, width: Int) {
     context.data!.storeBytes(of: value, toByteOffset: y * width + x, as: UInt8.self)
 }
 
 func main() {
-    let (width, height, targetFilePath) = parseArguments()
+    let (width, height, seed, targetFilePath) = parseArguments()
     let context = createGrayScaleContext(width: width, height: height)
     
-    let noise = SimplexNoise(seed: 1)
+    let noise = SimplexNoise(seed: seed)
     for y in 0..<height {
         for x in 0..<width {
             let value = 127.5 * (noise.noise2D(x: Double(x), y: Double(y)) + 1.0)
-            setGrayScalePixel(value: UInt8(value), inContext: context, x: x, y: y, width: width, height: height)
+            setGrayScalePixel(
+                value: UInt8(min(max(value, 0x00), 0xFF)),
+                inContext: context,
+                x: x,
+                y: y,
+                width: width
+            )
         }
     }
-    
+
     write(grayScaleContext: context, toPath: targetFilePath)
 }
 

@@ -17,7 +17,7 @@ import simd
 class SimplexNoise {
     private let stretchConstant2D: Double = -0.211324865405187 // (1.0 / sqrt(2.0 + 1.0) - 1.0) / 2.0
     private let squishConstant2D: Double = 0.366025403784439 // (sqrt(2.0 + 1.0) - 1.0) / 2.0
-    private let normConstant2D: Double = 47.0 // sqrt(2.0)
+    private let normConstant2D: Double = 41.0
     /*Gradients for 2D. They approximate the directions to vertices of an octagon from the center */
     private let gradients2D: [Double] = [
         5,  2,    2,  5,
@@ -29,7 +29,7 @@ class SimplexNoise {
     
     // Permutation lookup table (used for pseudo random gradient assignment)
     var perm: [Int]
-    init(seed: UInt64 = 0) {
+    init(seed: UInt64 = 1) {
         perm = []
         var generator = SeededGenerator(seed: seed)
         for i in 0..<256 {

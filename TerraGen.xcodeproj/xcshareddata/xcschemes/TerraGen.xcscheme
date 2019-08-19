@@ -71,6 +71,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "1337"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "~/Desktop/terrain.png"
             isEnabled = "YES">
          </CommandLineArgument>
