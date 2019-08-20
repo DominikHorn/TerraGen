@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B48F1F82230CA1D000FD5980 /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48F1F81230CA1D000FD5980 /* Progress.swift */; };
+		B48F1F85230CA1E200FD5980 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48F1F83230CA1E200FD5980 /* Utilities.swift */; };
+		B48F1F86230CA1E200FD5980 /* ProgressElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48F1F84230CA1E200FD5980 /* ProgressElements.swift */; };
 		B4C7F2A22309A7A600BA870D /* SimplexNoise.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7F2A12309A7A600BA870D /* SimplexNoise.swift */; };
 		B4C7F2A42309A9D800BA870D /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7F2A32309A9D800BA870D /* SeededGenerator.swift */; };
 		B4F3848A230984C900D29AD9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F38489230984C900D29AD9 /* main.swift */; };
@@ -25,6 +28,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B48F1F81230CA1D000FD5980 /* Progress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
+		B48F1F83230CA1E200FD5980 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		B48F1F84230CA1E200FD5980 /* ProgressElements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressElements.swift; sourceTree = "<group>"; };
 		B4C7F2A12309A7A600BA870D /* SimplexNoise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplexNoise.swift; sourceTree = "<group>"; };
 		B4C7F2A32309A9D800BA870D /* SeededGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeededGenerator.swift; sourceTree = "<group>"; };
 		B4F38486230984C900D29AD9 /* TerraGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TerraGen; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,9 +48,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B48F1F87230CA1E700FD5980 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				B48F1F81230CA1D000FD5980 /* Progress.swift */,
+				B48F1F84230CA1E200FD5980 /* ProgressElements.swift */,
+				B48F1F83230CA1E200FD5980 /* Utilities.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
 		B4F3847D230984C900D29AD9 = {
 			isa = PBXGroup;
 			children = (
+				B48F1F87230CA1E700FD5980 /* Progress */,
 				B4F38488230984C900D29AD9 /* TerraGen */,
 				B4F38487230984C900D29AD9 /* Products */,
 			);
@@ -126,7 +143,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4C7F2A42309A9D800BA870D /* SeededGenerator.swift in Sources */,
+				B48F1F86230CA1E200FD5980 /* ProgressElements.swift in Sources */,
 				B4F3848A230984C900D29AD9 /* main.swift in Sources */,
+				B48F1F82230CA1D000FD5980 /* Progress.swift in Sources */,
+				B48F1F85230CA1E200FD5980 /* Utilities.swift in Sources */,
 				B4C7F2A22309A7A600BA870D /* SimplexNoise.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

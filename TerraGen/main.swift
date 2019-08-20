@@ -108,18 +108,19 @@ func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: In
 func uniformQuantize(value: Double, max: Double, min: Double, stepCount: Int) -> Double {
     let stepSize = (max - min) / Double(stepCount)
     return floor(value / stepSize) * stepSize
-}
+} 
 
 func main() {
     let (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, seed, targetFilePath) = parseArguments()
     
     let noise = SimplexNoise(seed: seed)
-    for z in 0..<depth {
+    for z in Progress(0..<depth) {
         let context = createGrayScaleContext(width: Int(width), height: Int(height))
         for y in 0..<height {
             for x in 0..<width {
-                let value = 127.5 * (noise.noise3D(x: Double(x), y: Double(y), z: Double(z), featureSizeX: featureSizeX, featureSizeY: featureSizeY, featureSizeZ: featureSizeZ) + 1.0)
-                let quantized = value // uniformQuantize(value: value, max: 255, min: 0, stepCount: 4)
+                let value = 127.5 * (noise.noise3D(x: Double(x), y: Double(y), z: Double(z),
+                                    featureSizeX: featureSizeX, featureSizeY: featureSizeY, featureSizeZ: featureSizeZ) + 1.0)
+                let quantized = uniformQuantize(value: value, max: 255, min: 0, stepCount: 16)
                 setGrayScalePixel(
                     value: UInt8(min(max(quantized, 0x00), 0xFF)),
                     inContext: context,

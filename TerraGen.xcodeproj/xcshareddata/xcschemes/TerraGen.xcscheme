@@ -63,15 +63,15 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "64"
+            argument = "256"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "64"
+            argument = "256"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "64"
+            argument = "256"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
