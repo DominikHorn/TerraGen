@@ -51,12 +51,12 @@ func parseArguments() -> (width: UInt, height: UInt, depth: UInt, featureSizeX: 
         print("Failed to parse featureSizeZ parameter")
         exitWith(.InvalidArgument)
     }
-    guard let seed = UInt64(CommandLine.arguments[7]) else {
-        print("Failed to parse seed parameter")
+    guard let quantizerLevels = UInt(CommandLine.arguments[7]) else {
+        print("Failed to parse quantizerLevels parameter")
         exitWith(.InvalidArgument)
     }
-    guard let quantizerLevels = UInt(CommandLine.arguments[8]) else {
-        print("Failed to parse quantizerLevels parameter")
+    guard let seed = UInt64(CommandLine.arguments[8]) else {
+        print("Failed to parse seed parameter")
         exitWith(.InvalidArgument)
     }
     let targetFilePath = NSString(string: NSString(string: CommandLine.arguments[9]).expandingTildeInPath).deletingPathExtension
