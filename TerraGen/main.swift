@@ -19,10 +19,10 @@ func exitWith(_ error: ErrorCode = .NoError) -> Never {
     exit(error.rawValue)
 }
 
-func parseArguments() -> (width: UInt, height: UInt, depth: UInt, featureSizeX: Double, featureSizeY: Double, featureSizeZ: Double, seed: UInt64, targetFilePath: String) {
+func parseArguments() -> (width: UInt, height: UInt, depth: UInt, featureSizeX: Double, featureSizeY: Double, featureSizeZ: Double, quantizerLevels: UInt, seed: UInt64, targetFilePath: String) {
     // CommandLine argument count must equal three
-    guard CommandLine.argc == 9 else {
-        print("Usage: \(CommandLine.arguments[0]) <width> <height> <depth> <featureSizeX> <featureSizeY> <featureSizeZ> <seed> <file>")
+    guard CommandLine.argc == 10 else {
+        print("Usage: \(CommandLine.arguments[0]) <width> <height> <depth> <featureSizeX> <featureSizeY> <featureSizeZ> <quantizerLevels> <seed> <file>")
         exitWith(.NoError)
     }
     
@@ -55,9 +55,13 @@ func parseArguments() -> (width: UInt, height: UInt, depth: UInt, featureSizeX: 
         print("Failed to parse seed parameter")
         exitWith(.InvalidArgument)
     }
-    let targetFilePath = NSString(string: NSString(string: CommandLine.arguments[8]).expandingTildeInPath).deletingPathExtension
+    guard let quantizerLevels = UInt(CommandLine.arguments[8]) else {
+        print("Failed to parse quantizerLevels parameter")
+        exitWith(.InvalidArgument)
+    }
+    let targetFilePath = NSString(string: NSString(string: CommandLine.arguments[9]).expandingTildeInPath).deletingPathExtension
     
-    return (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, seed, targetFilePath)
+    return (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, quantizerLevels, seed, targetFilePath)
 }
 
 func createGrayScaleContext(width: Int, height: Int) -> CGContext {
@@ -105,13 +109,17 @@ func setGrayScalePixel(value: UInt8, inContext context: CGContext, x: Int, y: In
     context.data!.storeBytes(of: value, toByteOffset: y * width + x, as: UInt8.self)
 }
 
-func uniformQuantize(value: Double, max: Double, min: Double, stepCount: Int) -> Double {
-    let stepSize = (max - min) / Double(stepCount)
+func uniformQuantize(value: Double, max: Double, min: Double, quantizerLevels: UInt) -> Double {
+    guard quantizerLevels != 0 else {
+        return 0.0
+    }
+    
+    let stepSize = (max - min) / Double(quantizerLevels)
     return floor(value / stepSize) * stepSize
 } 
 
 func main() {
-    let (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, seed, targetFilePath) = parseArguments()
+    let (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, quantizerLevels, seed, targetFilePath) = parseArguments()
     
     let noise = SimplexNoise(seed: seed)
     for z in Progress(0..<depth) {
@@ -120,7 +128,7 @@ func main() {
             for x in 0..<width {
                 let value = 127.5 * (noise.noise3D(x: Double(x), y: Double(y), z: Double(z),
                                     featureSizeX: featureSizeX, featureSizeY: featureSizeY, featureSizeZ: featureSizeZ) + 1.0)
-                let quantized = uniformQuantize(value: value, max: 255, min: 0, stepCount: 16)
+                let quantized = uniformQuantize(value: value, max: 255, min: 0, quantizerLevels: quantizerLevels)
                 setGrayScalePixel(
                     value: UInt8(min(max(quantized, 0x00), 0xFF)),
                     inContext: context,
