@@ -63,11 +63,27 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "512"
+            argument = "64"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "512"
+            argument = "64"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "64"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "25.0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "25.0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "25.0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -75,7 +91,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "~/Desktop/terrain.png"
+            argument = "~/no_icloud/simplex3D/terrain.png"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

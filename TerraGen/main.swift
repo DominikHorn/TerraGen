@@ -19,29 +19,45 @@ func exitWith(_ error: ErrorCode = .NoError) -> Never {
     exit(error.rawValue)
 }
 
-func parseArguments() -> (width: Int, height: Int, seed: UInt64, targetFilePath: String) {
+func parseArguments() -> (width: UInt, height: UInt, depth: UInt, featureSizeX: Double, featureSizeY: Double, featureSizeZ: Double, seed: UInt64, targetFilePath: String) {
     // CommandLine argument count must equal three
-    guard CommandLine.argc == 5 else {
-        print("Usage: \(CommandLine.arguments[0]) <width> <height> <seed> <file>")
+    guard CommandLine.argc == 9 else {
+        print("Usage: \(CommandLine.arguments[0]) <width> <height> <depth> <featureSizeX> <featureSizeY> <featureSizeZ> <seed> <file>")
         exitWith(.NoError)
     }
     
     // Initialize script parameters
-    guard let width = Int(CommandLine.arguments[1]) else {
+    guard let width = UInt(CommandLine.arguments[1]) else {
         print("Failed to parse width parameter")
         exitWith(.InvalidArgument)
     }
-    guard let height = Int(CommandLine.arguments[2]) else {
+    guard let height = UInt(CommandLine.arguments[2]) else {
         print("Failed to parse height parameter")
         exitWith(.InvalidArgument)
     }
-    guard let seed = UInt64(CommandLine.arguments[3]) else {
+    guard let depth = UInt(CommandLine.arguments[3]) else {
+        print("Failed to parse depth parameter")
+        exitWith(.InvalidArgument)
+    }
+    guard let featureSizeX = Double(CommandLine.arguments[4]) else {
+        print("Failed to parse featureSizeX parameter")
+        exitWith(.InvalidArgument)
+    }
+    guard let featureSizeY = Double(CommandLine.arguments[5]) else {
+        print("Failed to parse featureSizeY parameter")
+        exitWith(.InvalidArgument)
+    }
+    guard let featureSizeZ = Double(CommandLine.arguments[6]) else {
+        print("Failed to parse featureSizeZ parameter")
+        exitWith(.InvalidArgument)
+    }
+    guard let seed = UInt64(CommandLine.arguments[7]) else {
         print("Failed to parse seed parameter")
         exitWith(.InvalidArgument)
     }
-    let targetFilePath = NSString(string: CommandLine.arguments[4]).expandingTildeInPath
+    let targetFilePath = NSString(string: NSString(string: CommandLine.arguments[8]).expandingTildeInPath).deletingPathExtension
     
-    return (width, height, seed, targetFilePath)
+    return (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, seed, targetFilePath)
 }
 
 func createGrayScaleContext(width: Int, height: Int) -> CGContext {
@@ -95,25 +111,26 @@ func uniformQuantize(value: Double, max: Double, min: Double, stepCount: Int) ->
 }
 
 func main() {
-    let (width, height, seed, targetFilePath) = parseArguments()
-    let context = createGrayScaleContext(width: width, height: height)
+    let (width, height, depth, featureSizeX, featureSizeY, featureSizeZ, seed, targetFilePath) = parseArguments()
     
     let noise = SimplexNoise(seed: seed)
-    for y in 0..<height {
-        for x in 0..<width {
-            let value = 127.5 * (noise.noise2D(x: Double(x), y: Double(y)) + 1.0)
-            let quantized = uniformQuantize(value: value, max: 255, min: 0, stepCount: 4)
-            setGrayScalePixel(
-                value: UInt8(min(max(quantized, 0x00), 0xFF)),
-                inContext: context,
-                x: x,
-                y: y,
-                width: width
-            )
+    for z in 0..<depth {
+        let context = createGrayScaleContext(width: Int(width), height: Int(height))
+        for y in 0..<height {
+            for x in 0..<width {
+                let value = 127.5 * (noise.noise3D(x: Double(x), y: Double(y), z: Double(z), featureSizeX: featureSizeX, featureSizeY: featureSizeY, featureSizeZ: featureSizeZ) + 1.0)
+                let quantized = value // uniformQuantize(value: value, max: 255, min: 0, stepCount: 4)
+                setGrayScalePixel(
+                    value: UInt8(min(max(quantized, 0x00), 0xFF)),
+                    inContext: context,
+                    x: Int(x),
+                    y: Int(y),
+                    width: Int(width)
+                )
+            }
         }
+        write(grayScaleContext: context, toPath: "\(targetFilePath)_\(z).png")
     }
-
-    write(grayScaleContext: context, toPath: targetFilePath)
 }
 
 main()
